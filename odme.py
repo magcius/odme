@@ -7,7 +7,7 @@ from twisted.python import log
 from twisted.words.protocols import irc
 from twisted.application import internet, service
 
-STREAMER = "supergreatfriend"
+STREAMER = "supergreatfrien"
 COUNTWORDS = [
     "red",
     "green",
