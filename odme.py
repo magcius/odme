@@ -85,6 +85,9 @@ class OdmeBot(irc.IRCClient):
         if func is not None:
             func(user, args)
 
+    def do_novote(self, user, args):
+        del self.counts[user]
+
     @require_mod
     def do_ignore(self, user, users):
         self.ignore |= set(users)
