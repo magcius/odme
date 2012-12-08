@@ -99,6 +99,7 @@ class OdmeBot(irc.IRCClient):
     def do_newvote(self, user, args):
         self.new_vote()
 
+    @require_mod
     def do_votes(self, user, args):
         self.say("Counts for %s" % ', '.join(("%s: %d") % (word, self.countnumbers[word])
                                              for word in COUNTWORDS))
