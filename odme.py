@@ -84,6 +84,7 @@ class OdmeBot(irc.IRCClient):
 
     def do_novote(self, user, args):
         del self.counts[user]
+        self.update_counts()
 
     def do_help(self, user, args):
         self.say("%s: Say what color you want. Don't do '!choose green' or '!vote green' like a moron. That's it!" % (user,))
