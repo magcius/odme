@@ -110,9 +110,6 @@ class OdmeBot(irc.IRCClient):
         self.say("Counts for %s" % ', '.join(("%s: %d") % (word, count) for word, count in
                                              sorted(self.countnumbers.iteritems(), key=(lambda (w, c): c), reverse=True)))
 
-    def do_random(self, user, args):
-        self.say("%s: %s." % (user, random.choice(COUNTWORDS).title(),))
-
 class OdmeFactory(protocol.ReconnectingClientFactory):
     protocol = OdmeBot
 
