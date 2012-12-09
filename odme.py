@@ -73,7 +73,7 @@ class OdmeBot(irc.IRCClient):
     def count(self, user, message):
         message = message.lower()
         words = self.regex.findall(message)
-        self.counts[user] |= set(words)
+        self.counts[user] = set(words)
         self.update_counts()
 
     def command(self, user, command):
