@@ -107,8 +107,8 @@ class OdmeBot(irc.IRCClient):
 
     @require_mod
     def do_votes(self, user, args):
-        self.say("Counts for %s" % ', '.join(("%s: %d") % (word, self.countnumbers[word])
-                                             for word in COUNTWORDS))
+        self.say("Counts for %s" % ', '.join(("%s: %d") % (word, count) for word, count in
+                                             sorted(self.countnumbers.iteritems(), key=(lambda (w, c): c), reverse=True)))
 
     def do_random(self, user, args):
         self.say("%s: %s." % (user, random.choice(COUNTWORDS).title(),))
