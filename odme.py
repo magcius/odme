@@ -39,7 +39,6 @@ class OdmeBot(irc.IRCClient):
 
     def signedOn(self):
         self.join(CHAN)
-        self.ignore = set()
         self.regex = re.compile(r'\b%s\b' % (r'\b|\b'.join(COUNTWORDS),))
         self.new_vote()
 
@@ -65,9 +64,6 @@ class OdmeBot(irc.IRCClient):
             self.countnumbers[word] = 0
 
         for user, words in self.counts.iteritems():
-            if user in self.ignore:
-                return
-
             for word in words:
                 self.countnumbers[word] += 1
 
@@ -91,16 +87,6 @@ class OdmeBot(irc.IRCClient):
 
     def do_help(self, user, args):
         self.say("%s: Say what color you want. Don't do '!choose green' or '!vote green' like a moron. That's it!" % (user,))
-
-    @require_mod
-    def do_ignore(self, user, users):
-        self.ignore |= set(users)
-        self.update_counts()
-
-    @require_mod
-    def do_unignore(self, user, users):
-        self.ignore -= set(users)
-        self.update_counts()
 
     @require_mod
     def do_newvote(self, user, args):
