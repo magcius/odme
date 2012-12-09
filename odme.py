@@ -12,6 +12,7 @@ COUNTWORDS = [
     "red",
     "green",
     "blue",
+    "leave",
 ]
 
 HOST = "%s.jtvirc.com" % (STREAMER,)
