@@ -1,17 +1,21 @@
 
-from collections import defaultdict
-import re
-from twisted.internet import protocol
-from twisted.words.protocols import irc
-from twisted.application import internet, service
-
-STREAMER = "supergreatfrien"
 COUNTWORDS = [
     "red",
-    "green",
     "blue",
+    "green",
     "leave",
 ]
+
+SPECIAL_COLORS = {
+    "red": "red",
+    "blue": "#1DB7D3",
+    "green": "#1DD32A",
+    "leave": "#D3661D",
+}
+
+FONT = "Arial 24 bold"
+
+STREAMER = "supergreatfrien"
 
 HOST = "%s.jtvirc.com" % (STREAMER,)
 CHAN = "#" + STREAMER
@@ -21,6 +25,75 @@ MODS = [
     STREAMER,
     "jstpierre",
 ]
+
+import Tkinter
+
+def stop_reactor():
+    from twisted.internet import reactor
+    reactor.stop()
+
+class CounterGUI(object):
+    def __init__(self):
+        self.root = Tkinter.Tk()
+        self.root.protocol('WM_DELETE_WINDOW', stop_reactor)
+
+        self.frame = Tkinter.Frame(self.root)
+        self.frame.pack(expand=True, fill=Tkinter.X)
+
+        self.novote_label = Tkinter.Label(self.frame, text="No vote.", font=FONT)
+        self.pack_label(self.novote_label)
+
+        self.labels = {}
+
+    def pack_label(self, label):
+        label.pack(side="left", padx=6, expand=True)
+
+    def make_choice_label(self, choice):
+        if choice in SPECIAL_COLORS:
+            color = SPECIAL_COLORS[choice]
+        else:
+            color = "black"
+
+        label = Tkinter.Label(self.frame, fg=color, font=FONT)
+        self.pack_label(label)
+        self.labels[choice] = label
+        return label
+
+    def end_vote(self):
+        for label in self.labels.itervalues():
+            label.destroy()
+
+        self.pack_label(self.novote_label)
+
+    def new_vote(self, choices):
+        self.novote_label.pack_forget()
+
+        for choice in choices:
+            self.make_choice_label(choice)
+
+    def needs_text_prefix(self, choice):
+        return choice not in SPECIAL_COLORS
+
+    def get_choice_text(self, choice, count):
+        if self.needs_text_prefix(choice):
+            return "%s: %d" % (choice.title(), count)
+        else:
+            return "%d" % (count,)
+
+    def update_counts(self, countnumbers):
+        for choice, count in countnumbers.iteritems():
+            self.labels[choice]["text"] = self.get_choice_text(choice, count)
+
+gui = CounterGUI()
+
+from twisted.internet import tksupport
+tksupport.install(gui.root)
+
+from collections import defaultdict
+import re
+from twisted.internet import protocol
+from twisted.words.protocols import irc
+from twisted.application import internet, service
 
 def require_mod(func):
     def wrapper(bot, user, args):
@@ -94,6 +167,8 @@ class OdmeBot(irc.IRCClient):
 
     def new_vote(self, extra_choices):
         self.words = COUNTWORDS + extra_choices
+        gui.new_vote(self.words)
+
         self.regex = re.compile(r'\b%s\b' % (r'\b|\b'.join(self.words),))
         self.counts = defaultdict(lambda: set())
         self.update_counts()
@@ -102,6 +177,7 @@ class OdmeBot(irc.IRCClient):
     def end_vote(self):
         self.summary(True)
         self.voting = False
+        gui.end_vote()
 
     def privmsg(self, user, channel, message):
         nick, _, host = user.partition('!')
@@ -120,6 +196,8 @@ class OdmeBot(irc.IRCClient):
         for user, words in self.counts.iteritems():
             for word in words:
                 self.countnumbers[word] += 1
+
+        gui.update_counts(self.countnumbers)
 
     @require_voting
     def count(self, user, message):
