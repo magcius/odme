@@ -63,18 +63,16 @@ class OdmeBot(irc.IRCClient):
         return sorted(self.countnumbers.iteritems(), key=(lambda (w, c): c), reverse=True)
 
     def winners(self):
-        first = True
         maxcount = None
         counts = self.sorted_counts()
-        if maxcount == 0:
+
+        if len(counts) == 0:
             return []
 
         for i, (word, count) in enumerate(counts):
-            if i == 0:
-                maxcount = count
-                continue
-            if count != maxcount:
+            if maxcount is not None and count != maxcount:
                 break
+
         return counts[:i]
 
     def summary(self, done):
