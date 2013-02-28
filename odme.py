@@ -154,9 +154,7 @@ class OdmeBot(irc.IRCClient):
 
     def summary(self, done):
         winners = self.winners()
-        if len(winners) == 0:
-            self.say("Nobody voted! How did that happen?")
-        else:
+        if len(winners) != 0:
             word, count = winners[0]
             words = [word for word, count in winners]
             if len(winners) == 1:
