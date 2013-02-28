@@ -1,9 +1,7 @@
 
 from collections import defaultdict
-import random
 import re
-from twisted.internet import reactor, protocol
-from twisted.python import log
+from twisted.internet import protocol
 from twisted.words.protocols import irc
 from twisted.application import internet, service
 
