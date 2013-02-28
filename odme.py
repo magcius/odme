@@ -139,12 +139,16 @@ class OdmeBot(irc.IRCClient):
         maxcount = None
         counts = self.sorted_counts()
 
-        if len(counts) == 0:
-            return []
-
         for i, (word, count) in enumerate(counts):
-            if maxcount is not None and count != maxcount:
+            if maxcount is None:
+                count = maxcount
+                continue
+
+            if count != maxcount:
                 break
+
+        if maxcount is None:
+            return []
 
         return counts[:i]
 
