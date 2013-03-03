@@ -49,11 +49,7 @@ class CounterGUI(object):
         label.pack(side="left", padx=6, expand=True)
 
     def make_choice_label(self, choice):
-        if choice in SPECIAL_COLORS:
-            color = SPECIAL_COLORS[choice]
-        else:
-            color = "black"
-
+        color = SPECIAL_COLORS.get(choice, "black")
         label = Tkinter.Label(self.frame, fg=color, font=FONT)
         self.pack_label(label)
         self.labels[choice] = label
