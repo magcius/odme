@@ -168,6 +168,9 @@ class OdmeBot(irc.IRCClient):
                                 count, plural("vote", "votes", count)))
 
     def new_vote(self, extra_choices):
+        if self.voting:
+            self.end_vote()
+
         self.words = COUNTWORDS + extra_choices
         gui.new_vote(self.words)
 
@@ -177,7 +180,6 @@ class OdmeBot(irc.IRCClient):
         self.voting = True
 
     def end_vote(self):
-        self.summary(True)
         self.voting = False
         gui.end_vote()
 
@@ -231,6 +233,7 @@ class OdmeBot(irc.IRCClient):
     @require_mod
     @require_voting
     def do_endvote(self, user, args):
+        self.summary(True)
         self.end_vote()
 
     @require_mod
