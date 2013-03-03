@@ -76,9 +76,9 @@ class CounterGUI(object):
 
     def get_choice_text(self, choice, count):
         if self.needs_text_prefix(choice):
-            return "%s: %d" % (choice.title(), count)
+            return "%s: %02d" % (choice.title(), count)
         else:
-            return "%d" % (count,)
+            return "%02d" % (count,)
 
     def update_counts(self, countnumbers):
         for choice, count in countnumbers.iteritems():
