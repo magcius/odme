@@ -141,7 +141,7 @@ class OdmeBot(irc.IRCClient):
 
         for i, (word, count) in enumerate(counts):
             if maxcount is None:
-                count = maxcount
+                maxcount = count
                 continue
 
             if count != maxcount:
